@@ -1,5 +1,6 @@
 import 'package:bagel_db/bagel_db.dart';
 import 'package:dio/dio.dart';
+
 import '.environment.dart';
 
 late BagelDB db;
@@ -10,6 +11,6 @@ Future<void> init() async {
 
 final dio = Dio(
   BaseOptions(
-    baseUrl: 'http://localhost:$PORT',
+    baseUrl: 'https://europe-west1-vizo-feed-me.cloudfunctions.net',
   ),
 );

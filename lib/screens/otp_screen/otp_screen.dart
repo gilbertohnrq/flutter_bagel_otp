@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -224,18 +225,27 @@ class _OtpScreenState extends State<OtpScreen> {
       // final res = await db.bagelUsersRequest.updatePassword(phone, smsOTP);
 
       // * via internal api (currently using an express js server)
-      final res = await dio.post(
-        '/updateUserPassword',
-        data: {
-          'emailOrPhone': phone,
-          'password': smsOTP,
-        },
-      );
-      print({res});
+      // final res = await dio.post(
+      //   '/updateUserPassword',
+      //   data: {
+      //     'emailOrPhone': phone,
+      //     'password': smsOTP,
+      //   },
+      // );
+      // print({res});
 
-      final validateOtpRes = await db.bagelUsersRequest.validateOtp(smsOTP);
-      print({validateOtpRes});
-      Navigator.pushReplacementNamed(context, '/homeScreen');
+      try {
+        await db.bagelUsersRequest.validate(phone, smsOTP);
+      } catch (e, s) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+
+        log(e.toString(), stackTrace: s);
+      }
+      // Navigator.pushReplacementNamed(context, '/homeScreen');
     } catch (e) {
       print({e});
     }
@@ -249,7 +259,7 @@ class _OtpScreenState extends State<OtpScreen> {
         setState(() {
           errorMessage = 'Invalid Code';
         });
-        showAlertDialog(context, 'Invalid Code');
+        showAlertDialog(context, 'Invalid Co');
         break;
       default:
         showAlertDialog(context, error.message as String);
